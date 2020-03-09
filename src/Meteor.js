@@ -88,12 +88,14 @@ module.exports = {
       SocketConstructor: WebSocket,
       ...options,
     });
-
-    NetInfo.isConnected.addEventListener('connectionChange', isConnected => {
-      if (isConnected && Data.ddp.autoReconnect) {
-        Data.ddp.connect();
-      }
-    });
+      
+    if (NetInfo) {
+      NetInfo.addEventListener(state => {
+                if (state.isConnected && Data.ddp.autoReconnect) {
+                    Data.ddp.connect();
+                }
+            });
+    }
 
     Data.ddp.on('connected', () => {
       // Clear the collections of any stale data in case this is a reconnect
